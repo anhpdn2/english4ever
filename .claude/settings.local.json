@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__paper__get_basic_info",
+      "mcp__paper__get_screenshot",
+      "mcp__paper__get_tree_summary",
+      "mcp__paper__create_artboard",
+      "WebSearch",
+      "Bash(uvx --version)",
+      "mcp__paper__write_html",
+      "mcp__paper__get_children",
+      "mcp__paper__get_node_info",
+      "mcp__paper__get_fill_image",
+      "mcp__paper__finish_working_on_nodes",
+      "Bash(dir:*)"
+    ]
+  }
+}

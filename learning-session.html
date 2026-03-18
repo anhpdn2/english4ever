@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English4Ever - Learning Session</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #F5F7FA;
+            color: #2C3E50;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background: #E0E6ED;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #2B70C9;
+            transition: width 500ms ease-out;
+        }
+
+        /* Main Container */
+        .learning-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        /* Flashcard */
+        .flashcard {
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 48px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .question {
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 32px;
+            font-weight: 500;
+        }
+
+        /* Answer Options */
+        .answer-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .answer-btn {
+            height: 56px;
+            border: 2px solid #CBD5E0;
+            border-radius: 8px;
+            background: #FFFFFF;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 150ms;
+        }
+
+        .answer-btn:hover {
+            border-color: #2B70C9;
+        }
+
+        .answer-btn.selected {
+            background: #2B70C9;
+            color: #FFFFFF;
+            border-color: #2B70C9;
+        }
+
+        .answer-btn.correct {
+            background: #4CAF50;
+            color: #FFFFFF;
+            border-color: #4CAF50;
+        }
+
+        .answer-btn.wrong {
+            background: #F44336;
+            color: #FFFFFF;
+            border-color: #F44336;
+            animation: shake 400ms;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Action Buttons */
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .btn-primary {
+            height: 48px;
+            background: #2B70C9;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 150ms;
+        }
+
+        .btn-primary:hover {
+            background: #1E5BA8;
+            transform: scale(1.02);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .btn-text {
+            background: none;
+            border: none;
+            color: #7F8C8D;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 640px) {
+            .flashcard {
+                padding: 24px;
+            }
+
+            .question {
+                font-size: 20px;
+            }
+
+            .btn-primary {
+                height: 44px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar" style="width: 33%;"></div>
+    </div>
+
+    <div class="learning-container">
+        <div class="flashcard">
+            <div class="question" id="question">What does "accomplish" mean?</div>
+
+            <div class="answer-options" id="answerOptions">
+                <button class="answer-btn" data-answer="0">To achieve or complete successfully</button>
+                <button class="answer-btn" data-answer="1">To begin something new</button>
+                <button class="answer-btn" data-answer="2">To forget about something</button>
+                <button class="answer-btn" data-answer="3">To delay or postpone</button>
+            </div>
+
+            <div class="actions">
+                <button class="btn-primary" id="checkBtn">Check Answer</button>
+                <button class="btn-text" id="skipBtn">Skip</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const answerBtns = document.querySelectorAll('.answer-btn');
+        const checkBtn = document.getElementById('checkBtn');
+        let selectedAnswer = null;
+        const correctAnswer = 0;
+
+        answerBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                answerBtns.forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedAnswer = parseInt(btn.dataset.answer);
+            });
+        });
+
+        checkBtn.addEventListener('click', () => {
+            if (selectedAnswer === null) return;
+
+            answerBtns.forEach(btn => {
+                const answer = parseInt(btn.dataset.answer);
+                if (answer === correctAnswer) {
+                    btn.classList.add('correct');
+                } else if (answer === selectedAnswer && selectedAnswer !== correctAnswer) {
+                    btn.classList.add('wrong');
+                }
+                btn.disabled = true;
+            });
+
+            checkBtn.textContent = 'Continue';
+            checkBtn.onclick = () => location.reload();
+        });
+    </script>
+</body>
+</html>

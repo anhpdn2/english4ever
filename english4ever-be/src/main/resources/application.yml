@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: english4ever-backend
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/english4ever
+      database: english4ever
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+cors:
+  allowed-origins: http://localhost:5173,http://localhost:3000
+  allowed-methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
+  allowed-headers: "*"
+  allow-credentials: true

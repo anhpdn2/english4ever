@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "paper": {
+      "command": "uvx",
+      "args": ["mcp-server-paper"],
+      "env": {},
+      "disabled": false,
+      "autoApprove": [
+        "get_basic_info",
+        "get_screenshot",
+        "get_tree_summary"
+      ]
+    }
+  }
+}
