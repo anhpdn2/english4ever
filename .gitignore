@@ -1,0 +1,26 @@
+# ===== Frontend (React + Vite) =====
+english4ver-fe/node_modules/
+english4ver-fe/dist/
+english4ver-fe/.env
+english4ver-fe/.env.local
+english4ver-fe/.env.*.local
+
+# ===== Backend (Spring Boot + Maven) =====
+english4ever-be/target/
+english4ever-be/.mvn/wrapper/maven-wrapper.jar
+english4ever-be/*.log
+
+# ===== IDE =====
+.idea/
+*.iml
+.vscode/
+*.suo
+*.user
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+
+# ===== Logs =====
+*.log
+logs/
