@@ -12,7 +12,8 @@
       "mcp__paper__get_node_info",
       "mcp__paper__get_fill_image",
       "mcp__paper__finish_working_on_nodes",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(npm run dev)"
     ]
   }
 }

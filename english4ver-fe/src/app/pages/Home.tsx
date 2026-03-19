@@ -1,88 +1,132 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import { BookOpen, Clock } from "lucide-react";
-import { getCourses, type CourseDTO } from "../services/courseApi";
-
-const COURSE_COLORS = [
-  "bg-blue-500", "bg-green-500", "bg-purple-500",
-  "bg-red-500", "bg-yellow-500", "bg-pink-500",
-];
+import { BookOpen, Clock, Plus } from "lucide-react";
+import { useApp } from "../context/AppContext";
+import { Button } from "../components/ui/button";
+import { Badge } from "../components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+} from "../components/ui/card";
 
 export function Home() {
-  const [courses, setCourses] = useState<CourseDTO[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { courses, loading, error } = useApp();
 
-  useEffect(() => {
-    getCourses()
-      .then(setCourses)
-      .catch(() => setError("Không thể tải danh sách khóa học"))
-      .finally(() => setLoading(false));
-  }, []);
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-muted/40 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Đang tải khóa học...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-muted/40 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-destructive mb-4">{error}</p>
+          <Button onClick={() => window.location.reload()}>Thử lại</Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="font-bold text-2xl text-blue-600">English4Ever</h1>
-            <Link to="/create" className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+    <div className="min-h-screen bg-muted/40">
+      {/* Header */}
+      <header className="bg-background border-b sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+          <h1 className="font-bold text-2xl text-primary">Quizlet Clone</h1>
+          <Button asChild>
+            <Link to="/create-course">
+              <Plus />
               Tạo khóa học
             </Link>
-          </div>
+          </Button>
         </div>
       </header>
 
+      {/* Main */}
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Khóa học của bạn</h2>
-          <p className="text-gray-600">Chọn một khóa học để bắt đầu học tập</p>
+          <h2 className="text-3xl font-bold text-foreground mb-1">Khóa học của bạn</h2>
+          <p className="text-muted-foreground">Chọn một khóa học để bắt đầu học tập</p>
         </div>
 
-        {loading && <p className="text-gray-500">Đang tải...</p>}
-        {error && <p className="text-red-500">{error}</p>}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {courses.map((course) => (
+            <Link key={course.id} to={`/course/${course.id}`} className="group">
+              <Card className="overflow-hidden gap-0 hover:shadow-lg transition-shadow">
+                <div
+                  className={`${(course as any).coverImage ? "" : course.color} h-32 relative`}
+                >
+                  {(course as any).coverImage ? (
+                    <img
+                      src={(course as any).coverImage}
+                      alt={course.title}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-gradient-to-br from-transparent to-black/20" />
+                  )}
+                </div>
+                <CardContent className="pt-4 pb-2">
+                  <h3 className="font-bold text-xl text-foreground mb-1 group-hover:text-primary transition-colors">
+                    {course.title}
+                  </h3>
+                  <p className="text-muted-foreground text-sm line-clamp-2">
+                    {course.description}
+                  </p>
+                </CardContent>
+                <CardFooter className="pb-4 gap-3">
+                  <Badge variant="secondary" className="gap-1">
+                    <BookOpen className="w-3 h-3" />
+                    {course.units.length} units
+                  </Badge>
+                  <Badge variant="secondary" className="gap-1">
+                    <Clock className="w-3 h-3" />
+                    {course.units.reduce((acc, u) => acc + u.vocabularies.length, 0)} từ
+                  </Badge>
+                </CardFooter>
+              </Card>
+            </Link>
+          ))}
 
-        {!loading && !error && (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {courses.map((course, i) => (
-                <Link key={course.id} to={`/course/${course.id}`} className="group">
-                  <div className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
-                    <div className={`${COURSE_COLORS[i % COURSE_COLORS.length]} h-32 relative`}>
-                      <div className="absolute inset-0 bg-gradient-to-br from-transparent to-black/20"></div>
-                    </div>
-                    <div className="p-5">
-                      <h3 className="font-bold text-xl text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-                        {course.name}
-                      </h3>
-                      <p className="text-gray-600 text-sm mb-4">{course.description}</p>
-                      <div className="flex items-center gap-4 text-sm text-gray-500">
-                        <div className="flex items-center gap-1">
-                          <BookOpen className="w-4 h-4" />
-                          <span>{course.totalUnits} units</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Clock className="w-4 h-4" />
-                          <span>{course.totalFlashcards} từ</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              ))}
+          {/* Add new card */}
+          <Link
+            to="/create-course"
+            className="group bg-background rounded-xl border-2 border-dashed border-border hover:border-primary transition-colors flex flex-col items-center justify-center h-48 gap-3"
+          >
+            <div className="w-14 h-14 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors flex items-center justify-center">
+              <Plus className="w-7 h-7 text-primary" />
             </div>
+            <div className="text-center">
+              <p className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                Tạo khóa học mới
+              </p>
+              <p className="text-sm text-muted-foreground">Bắt đầu xây dựng khóa học của bạn</p>
+            </div>
+          </Link>
+        </div>
 
-            {courses.length === 0 && (
-              <div className="text-center py-16">
-                <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Chưa có khóa học nào</h3>
-                <p className="text-gray-600 mb-6">Tạo khóa học đầu tiên của bạn để bắt đầu học tập</p>
-                <Link to="/create" className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                  Tạo khóa học mới
-                </Link>
-              </div>
-            )}
-          </>
+        {/* Empty state */}
+        {courses.length === 0 && (
+          <div className="text-center py-20 border-2 border-dashed border-border rounded-xl bg-background">
+            <BookOpen className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-2xl font-semibold mb-2">Chưa có khóa học nào</h3>
+            <p className="text-muted-foreground mb-6">
+              Tạo khóa học đầu tiên để bắt đầu học từ vựng
+            </p>
+            <Button asChild size="lg">
+              <Link to="/create-course">
+                <Plus />
+                Tạo khóa học đầu tiên
+              </Link>
+            </Button>
+          </div>
         )}
       </main>
     </div>

@@ -24,6 +24,8 @@ public class Course {
 
     private String imageUrl;
 
+    private String color; // Color for course cover (e.g., "bg-blue-500")
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;

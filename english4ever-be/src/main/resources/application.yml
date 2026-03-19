@@ -3,7 +3,7 @@ spring:
     name: english4ever-backend
   data:
     mongodb:
-      uri: mongodb://localhost:27017/english4ever
+      uri: mongodb://admin:admin@localhost:27017/english4ever?authSource=admin
       database: english4ever
 
 server:

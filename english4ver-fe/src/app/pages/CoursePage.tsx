@@ -1,93 +1,147 @@
 import { Link, useParams } from "react-router";
-import { mockCourses } from "../data/mockData";
-import { ArrowLeft, BookOpen, ChevronRight } from "lucide-react";
+import { useApp } from "../context/AppContext";
+import { ArrowLeft, BookOpen, ChevronRight, Plus } from "lucide-react";
+import { Button } from "../components/ui/button";
+import { Badge } from "../components/ui/badge";
+import {
+  Card,
+  CardContent,
+} from "../components/ui/card";
+import { Separator } from "../components/ui/separator";
 
 export function CoursePage() {
   const { courseId } = useParams();
-  const course = mockCourses.find((c) => c.id === courseId);
+  const { getCourse } = useApp();
+  const course = getCourse(courseId!);
 
   if (!course) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-muted/40 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Không tìm thấy khóa học
-          </h2>
-          <Link to="/" className="text-blue-600 hover:underline">
-            Quay về trang chủ
-          </Link>
+          <h2 className="text-2xl font-bold mb-2">Không tìm thấy khóa học</h2>
+          <Button variant="link" asChild>
+            <Link to="/">Quay về trang chủ</Link>
+          </Button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-muted/40">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200">
+      <header className="bg-background border-b">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4"
+          <Button variant="ghost" size="sm" asChild className="mb-4 -ml-2">
+            <Link to="/">
+              <ArrowLeft />
+              Quay lại
+            </Link>
+          </Button>
+
+          {/* Course Banner */}
+          <div
+            className={`${
+              (course as any).coverImage ? "" : course.color
+            } rounded-xl overflow-hidden relative min-h-[140px]`}
           >
-            <ArrowLeft className="w-4 h-4" />
-            Quay lại
-          </Link>
-          <div className={`${course.color} rounded-lg p-8 text-white`}>
-            <h1 className="text-4xl font-bold mb-2">{course.title}</h1>
-            <p className="text-white/90 text-lg">{course.description}</p>
-            <div className="mt-4 flex items-center gap-4 text-sm text-white/80">
-              <span>{course.units.length} units</span>
-              <span>•</span>
-              <span>
-                {course.units.reduce((acc, unit) => acc + unit.vocabularies.length, 0)} từ vựng
-              </span>
+            {(course as any).coverImage && (
+              <img
+                src={(course as any).coverImage}
+                alt={course.title}
+                className="w-full h-40 object-cover absolute inset-0"
+              />
+            )}
+            <div
+              className={`relative z-10 p-8 flex flex-col justify-end min-h-[140px] ${
+                (course as any).coverImage
+                  ? "bg-gradient-to-t from-black/70 via-black/30 to-transparent"
+                  : ""
+              }`}
+            >
+              <h1 className="text-4xl font-bold text-white mb-1">{course.title}</h1>
+              {course.description && (
+                <p className="text-white/80 text-base">{course.description}</p>
+              )}
+              <div className="flex items-center gap-3 mt-3">
+                <Badge className="bg-white/20 text-white border-white/30 hover:bg-white/30">
+                  {course.units.length} units
+                </Badge>
+                <Badge className="bg-white/20 text-white border-white/30 hover:bg-white/30">
+                  {course.units.reduce((acc, u) => acc + u.vocabularies.length, 0)} từ vựng
+                </Badge>
+              </div>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
+      {/* Main */}
       <main className="max-w-7xl mx-auto px-4 py-8">
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Danh sách Units</h2>
-          <p className="text-gray-600 mt-1">
-            Chọn một unit để bắt đầu học từ vựng
-          </p>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-2xl font-bold">Danh sách Units</h2>
+            <p className="text-muted-foreground mt-0.5 text-sm">
+              Chọn một unit để bắt đầu học từ vựng
+            </p>
+          </div>
+          <Button asChild>
+            <Link to={`/course/${courseId}/create-unit`}>
+              <Plus />
+              Tạo unit mới
+            </Link>
+          </Button>
         </div>
 
-        <div className="space-y-4">
+        <Separator className="mb-6" />
+
+        <div className="space-y-3">
           {course.units.map((unit, index) => (
-            <Link
-              key={unit.id}
-              to={`/unit/${courseId}/${unit.id}`}
-              className="block"
-            >
-              <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg hover:border-blue-300 transition-all group">
-                <div className="flex items-start justify-between">
-                  <div className="flex gap-4 flex-1">
-                    <div className="flex-shrink-0">
-                      <div className={`w-12 h-12 ${course.color} rounded-lg flex items-center justify-center text-white font-bold text-lg`}>
-                        {index + 1}
-                      </div>
+            <Link key={unit.id} to={`/unit/${courseId}/${unit.id}`} className="block">
+              <Card className="hover:shadow-md hover:border-primary/40 transition-all group">
+                <CardContent className="p-5">
+                  <div className="flex items-center gap-4">
+                    <div
+                      className={`w-11 h-11 ${course.color} rounded-lg flex items-center justify-center text-white font-bold flex-shrink-0`}
+                    >
+                      {index + 1}
                     </div>
-                    <div className="flex-1">
-                      <h3 className="font-bold text-xl text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors truncate">
                         {unit.title}
                       </h3>
-                      <p className="text-gray-600 mb-3">{unit.description}</p>
-                      <div className="flex items-center gap-2 text-sm text-gray-500">
-                        <BookOpen className="w-4 h-4" />
-                        <span>{unit.vocabularies.length} từ vựng</span>
-                      </div>
+                      {unit.description && (
+                        <p className="text-muted-foreground text-sm truncate">{unit.description}</p>
+                      )}
+                      <Badge variant="secondary" className="mt-1.5 gap-1">
+                        <BookOpen className="w-3 h-3" />
+                        {unit.vocabularies.length} từ vựng
+                      </Badge>
                     </div>
+                    <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0" />
                   </div>
-                  <ChevronRight className="w-6 h-6 text-gray-400 group-hover:text-blue-600 transition-colors flex-shrink-0" />
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             </Link>
           ))}
         </div>
+
+        {/* Empty state */}
+        {course.units.length === 0 && (
+          <div className="text-center py-20 border-2 border-dashed border-border rounded-xl bg-background">
+            <BookOpen className="w-14 h-14 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-xl font-semibold mb-1">Chưa có unit nào</h3>
+            <p className="text-muted-foreground mb-6 text-sm">
+              Tạo unit đầu tiên để bắt đầu thêm từ vựng
+            </p>
+            <Button asChild>
+              <Link to={`/course/${courseId}/create-unit`}>
+                <Plus />
+                Tạo unit đầu tiên
+              </Link>
+            </Button>
+          </div>
+        )}
       </main>
     </div>
   );

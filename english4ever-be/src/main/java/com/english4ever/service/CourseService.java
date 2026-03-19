@@ -33,6 +33,7 @@ public class CourseService {
         course.setName(request.getName());
         course.setDescription(request.getDescription());
         course.setImageUrl(request.getImageUrl());
+        course.setColor(request.getColor());
         course.setPublic(true);
         course.setCreatedAt(LocalDateTime.now());
         course.setUpdatedAt(LocalDateTime.now());
@@ -46,6 +47,7 @@ public class CourseService {
         course.setName(request.getName());
         course.setDescription(request.getDescription());
         course.setImageUrl(request.getImageUrl());
+        course.setColor(request.getColor());
         course.setUpdatedAt(LocalDateTime.now());
 
         return courseRepository.save(course);

@@ -13,4 +13,6 @@ public class CourseRequest {
     private String description;
 
     private String imageUrl;
+
+    private String color; // Color for course cover
 }

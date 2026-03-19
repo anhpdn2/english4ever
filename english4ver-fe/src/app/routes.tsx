@@ -3,7 +3,8 @@ import { Home } from "./pages/Home";
 import { CoursePage } from "./pages/CoursePage";
 import { UnitPage } from "./pages/UnitPage";
 import { MatchPage } from "./pages/MatchPage";
-import { CreateSetPage } from "./pages/CreateSetPage";
+import { CreateUnitPage } from "./pages/CreateUnitPage";
+import { CreateCoursePage } from "./pages/CreateCoursePage";
 
 export const router = createBrowserRouter([
   {
@@ -11,12 +12,16 @@ export const router = createBrowserRouter([
     Component: Home,
   },
   {
-    path: "/create",
-    Component: CreateSetPage,
+    path: "/create-course",
+    Component: CreateCoursePage,
   },
   {
     path: "/course/:courseId",
     Component: CoursePage,
+  },
+  {
+    path: "/course/:courseId/create-unit",
+    Component: CreateUnitPage,
   },
   {
     path: "/unit/:courseId/:unitId",
